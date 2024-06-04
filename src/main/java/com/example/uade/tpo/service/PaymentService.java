@@ -5,10 +5,14 @@ import com.example.uade.tpo.dtos.request.CardRequestDto;
 import com.example.uade.tpo.dtos.request.MPRequestDto;
 import com.example.uade.tpo.dtos.response.PaymentResponseDto;
 import com.example.uade.tpo.entity.Order;
+import com.example.uade.tpo.entity.OrderDetail;
 import com.example.uade.tpo.entity.Payment;
+import com.example.uade.tpo.entity.Product;
 import com.example.uade.tpo.entity.paymentMethod.*;
+import com.example.uade.tpo.repository.IOrderDetailRepository;
 import com.example.uade.tpo.repository.IOrderRepository;
 import com.example.uade.tpo.repository.IPaymentRepository;
+import com.example.uade.tpo.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +28,31 @@ public class PaymentService {
     @Autowired
     private IOrderRepository orderRepository;
 
+    @Autowired
+    private IProductRepository productRepository;
+
+    @Autowired
+    private IOrderDetailRepository orderDetailRepository;
+
     public PaymentResponseDto processPayment(Long orderId) {
         Payment payment = new Payment();
         List<Long> paymentIds = paymentRepository.getAllPaymentIds();
-        for (Long id : paymentIds) {
-            if (id.equals(orderId)) {
+        if(paymentIds.contains(orderId)){
+            return null;
+        }
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null || "PAID".equals(order.getStatus()))   {
+            return null;
+        }
+
+        for(OrderDetail orderDetail : orderDetailRepository.findByOrderId(orderId)){
+            Product product = productRepository.findById(orderDetail.getProductId()).orElse(null);
+            if (product == null || product.getStock() < orderDetail.getQuantity()) {
                 return null;
             }
-        }
-        if(orderRepository.findById(orderId).isEmpty()){
-            return null;
-        }
-        if(Objects.requireNonNull(orderRepository.findById(orderId).orElse(null)).getStatus().equals("PAID")){
-            return null;
+            product.setStock(product.getStock() - orderDetail.getQuantity());
+            productRepository.save(product);
         }
         payment.setOrderId(orderId);
         payment.setPaymentAmount(orderRepository.findById(orderId).get().getTotalAmount());
@@ -84,6 +100,13 @@ public class PaymentService {
         if (payment != null) {
             if(!payment.getPaymentStatus().equals("CONFIRMED")) {
                 payment.setPaymentStatus("CANCELLED");
+                for(OrderDetail orderDetail : orderDetailRepository.findByOrderId(payment.getOrderId())){
+                    Product product = productRepository.findById(orderDetail.getProductId()).orElse(null);
+                    if (product != null) {
+                        product.setStock(product.getStock() + orderDetail.getQuantity());
+                        productRepository.save(product);
+                    }
+                }
                 Payment savedPayment = paymentRepository.save(payment);
                 return Mapper.convertToPaymentResponseDto(savedPayment);
             }
