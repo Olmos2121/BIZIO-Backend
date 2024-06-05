@@ -92,10 +92,11 @@ public class OrderService {
         return null;
     }
 
+    @Transactional
     public Boolean deleteOrder(Long orderId) {
         if (orderRepository.existsById(orderId)) {
-            orderRepository.deleteById(orderId);
             orderDetailRepository.deleteByOrderId(orderId);
+            orderRepository.deleteById(orderId);
             return true;
         }
         return false;

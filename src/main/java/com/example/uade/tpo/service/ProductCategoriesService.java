@@ -34,7 +34,9 @@ public class ProductCategoriesService {
         List<ProductsCategories> productsCategories = productCategoryRepository.findAll();
         for (ProductsCategories productsCategory : productsCategories) {
             if (productsCategory.getCategoryId().equals(categoryId)) {
-                productsCategory.setCategoryId(null);
+                Long noValid = (long) -1;
+                productsCategory.setCategoryId(noValid);
+                productCategoryRepository.save(productsCategory);
             }
         }
     }

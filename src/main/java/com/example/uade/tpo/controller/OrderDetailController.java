@@ -23,10 +23,10 @@ public class OrderDetailController {
         return orderDetail.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @PutMapping("/{orderId}") //Update orderDetail
+    @PutMapping("/{orderDetailId}") //Update orderDetail
     public ResponseEntity<OrderDetailResponseDto> updateOrderDetail
-            (@PathVariable Long orderId, OrderDetailRequestDto orderDetail) {
-        OrderDetailResponseDto orderDetailResponseDto = orderDetailService.updateOrderDetail(orderId, orderDetail);
+            (@PathVariable Long orderDetailId, @RequestBody OrderDetailRequestDto orderDetail) {
+        OrderDetailResponseDto orderDetailResponseDto = orderDetailService.updateOrderDetail(orderDetailId, orderDetail);
         if(orderDetailResponseDto == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

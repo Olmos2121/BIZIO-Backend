@@ -21,12 +21,10 @@ public class OrderDetailService {
         return orderDetailRepository.findById(orderId).map(Mapper::convertToOrderDetailResponseDto);
     }
 
-    public OrderDetailResponseDto updateOrderDetail(Long orderId, OrderDetailRequestDto orderDetail){
-        Optional<OrderDetailResponseDto> optionalOrderDetail = getOrderDetailById(orderId);
+    public OrderDetailResponseDto updateOrderDetail(Long orderDetailId, OrderDetailRequestDto orderDetail){
+        Optional<OrderDetail> optionalOrderDetail = orderDetailRepository.findById(orderDetailId);
         if(optionalOrderDetail.isPresent()){
-            OrderDetail orderDetailToUpdate = new OrderDetail();
-            orderDetailToUpdate.setProductId(orderDetail.getProductId());
-            orderDetailToUpdate.setOrderId(orderId);
+            OrderDetail orderDetailToUpdate = optionalOrderDetail.get();
             orderDetailToUpdate.setQuantity(orderDetail.getQuantity());
             orderDetailToUpdate.setPrice(orderDetail.getPrice());
             orderDetailToUpdate.setTotal(orderDetail.getTotal());

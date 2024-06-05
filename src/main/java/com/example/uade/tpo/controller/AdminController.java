@@ -323,7 +323,7 @@ public class AdminController {
 
     @PutMapping("/discounts/{discountId}") //Update discount
     public ResponseEntity<DiscountResponseDto> updateDiscount
-            (@PathVariable Long discountId, DiscountRequestDto discount) {
+            (@PathVariable Long discountId, @RequestBody DiscountRequestDto discount) {
         DiscountResponseDto updatedDiscount = discountService.updateDiscount(discountId, discount);
         if(updatedDiscount == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -340,7 +340,7 @@ public class AdminController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/discounts/{code}") //Delete discount by code
+    @DeleteMapping("/discounts/code/{code}") //Delete discount by code
     public ResponseEntity<Void> deleteDiscountByCode(@PathVariable String code) {
         Boolean deleted = discountService.deleteDiscountByCode(code);
         if(!deleted) {
@@ -358,7 +358,7 @@ public class AdminController {
     }
     @PutMapping("/orderDetails/{orderId}") //Update orderDetail
     public ResponseEntity<OrderDetailResponseDto> updateOrderDetail
-            (@PathVariable Long orderId, OrderDetailRequestDto orderDetail) {
+            (@PathVariable Long orderId, @RequestBody OrderDetailRequestDto orderDetail) {
         OrderDetailResponseDto orderDetailResponseDto = orderDetailService.updateOrderDetail(orderId, orderDetail);
         if(orderDetailResponseDto == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -10,8 +10,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class OrderDetailRequestDto {
-    Long userId;
-    Long productId;
     Integer quantity;
     Double price;
     Double total;

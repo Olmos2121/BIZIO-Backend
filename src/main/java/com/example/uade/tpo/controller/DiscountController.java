@@ -3,6 +3,7 @@ package com.example.uade.tpo.controller;
 import com.example.uade.tpo.dtos.request.DiscountRequestDto;
 import com.example.uade.tpo.dtos.response.DiscountResponseDto;
 import com.example.uade.tpo.service.DiscountService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class DiscountController {
 
     @PutMapping("/{discountId}") //Update discount
     public ResponseEntity<DiscountResponseDto> updateDiscount
-            (@PathVariable Long discountId, DiscountRequestDto discount) {
+            (@PathVariable Long discountId,@RequestBody @Valid DiscountRequestDto discount) {
         DiscountResponseDto updatedDiscount = discountService.updateDiscount(discountId, discount);
         if(updatedDiscount == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -59,7 +60,7 @@ public class DiscountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{code}") //Delete discount by code
+    @DeleteMapping("/code/{code}") //Delete discount by code
     public ResponseEntity<Void> deleteDiscountByCode(@PathVariable String code) {
         Boolean deleted = discountService.deleteDiscountByCode(code);
         if(!deleted) {

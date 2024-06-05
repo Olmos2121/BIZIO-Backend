@@ -9,6 +9,7 @@ import com.example.uade.tpo.entity.ProductsCategories;
 import com.example.uade.tpo.repository.ICategoryRepository;
 import com.example.uade.tpo.repository.IProductCategoriesRepository;
 import com.example.uade.tpo.repository.IProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,10 +61,11 @@ public class CategoryService {
         return null;
     }
 
+    @Transactional
     public Boolean deleteCategory(Long categoryId) {
         if (categoryRepository.existsById(categoryId)) {
-            categoryRepository.deleteById(categoryId);
             productCategoriesService.deleteCategory(categoryId);
+            categoryRepository.deleteById(categoryId);
             return true;
         }
         return false;
@@ -80,5 +82,17 @@ public class CategoryService {
         productCategory.setCategoryId(categoryId);
         productCategoriesRepository.save(productCategory);
         return true;
+    }
+
+    public Boolean changeProductCategory(Long categoryId, Long productId) {
+        List<ProductsCategories> productsCategories = productCategoriesRepository.findAll();
+        for (ProductsCategories productsCategory : productsCategories) {
+            if (productsCategory.getProductId().equals(productId)) {
+                productsCategory.setCategoryId(categoryId);
+                productCategoriesRepository.save(productsCategory);
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -68,19 +68,12 @@ public class CartService {
         if(cartOptional.isEmpty()) {
             return false;
         }
-
         Cart cart = cartOptional.get();
-        List<CartItem> cartItems = cartItemRepository.findByCartId(cart.getId());
+        cartItemRepository.deleteByCartIdAndProductId(cart.getId(), productId);
 
-        boolean removed = cartItems.removeIf(item -> item.getProductId().equals(productId));
-
-        if(removed){
-            if(cartItems.isEmpty()){
-                cartRepository.delete(cart);
-            }
-            return true;
-        } else {
-            return false;
+        if(cartItemRepository.findByCartId(cart.getId()).isEmpty()){
+            cartRepository.delete(cart);
         }
+        return true;
     }
 }

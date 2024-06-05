@@ -67,4 +67,13 @@ public class CategoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("/{categoryId}/product/{productId}") //Change product category
+    public ResponseEntity<Void> changeProductCategory(@PathVariable Long categoryId, @PathVariable Long productId) {
+        Boolean changed = categoryService.changeProductCategory(categoryId, productId);
+        if (!changed) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

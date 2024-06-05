@@ -90,5 +90,15 @@ public class Mapper {
         return cartDto;
     }
 
+    public static OrderDetail convertToOrderDetail(OrderDetailResponseDto orderDetailRequestDto) {
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setId(orderDetailRequestDto.getOrderDetailId());
+        orderDetail.setOrderId(orderDetailRequestDto.getOrderId());
+        orderDetail.setProductId(orderDetailRequestDto.getProductId());
+        orderDetail.setQuantity(orderDetailRequestDto.getQuantity());
+        orderDetail.setPrice(orderDetailRequestDto.getPrice());
+        orderDetail.setTotal(orderDetailRequestDto.getTotal());
+        return orderDetail;
+    }
 
 }
