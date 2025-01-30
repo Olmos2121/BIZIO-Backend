@@ -1,8 +1,4 @@
-# grupo7-java
+# BIZIO-Backend
 
-Backend
-Grupo
-7
-TP
-Aplicaciones
-Interactivas
+BIZIO-Backend
+
